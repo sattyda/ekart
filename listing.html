@@ -3,8 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </head>
 <body>
 
+    <div id="buttonContainer" style="text-align: right">
+    </div>
+
+    <div id="container">
+
+    </div>
+
+<script>
+    $.ajax({
+        url : "/ekart/data/items.json",
+        data : JSON.stringify({  }),
+        type : 'get',
+        dataType : 'json',
+        contentType: "application/json",
+        cache : false,
+        success: function(response){
+
+            var pages = 1;
+
+
+            var divId = "mini"+pages;
+
+
+            var miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey;' class='miniBlock'>";
+
+            var btn = "<button style='cursor: pointer;padding: 10px; margin: 5px' class='pagination' onclick='pagination("+ pages+")'>"+  pages +"</button>";
+
+            document.getElementById("buttonContainer").innerHTML += btn;
+
+            for( var i = 0; i < response.length ; i++){
+                console.log(response[i]);
+                var block = '<div style="border-radius: 5px; border: 1px solid green; background: #bebebe; display: inline-block; padding: 5px; margin: 10px" class="sports">' +
+                    '<h3><b>'+ (i+1) +': </b> '+ response[i].name +'</h3>' +
+                    '<img style="height: 200px; width: 200px" src="'+ response[i].picture +'" /><br/>' +
+                    '<h5>Cost : '+ response[i].cost +'</h5>' +
+                    '<button style="padding: 5px; ">BUY NOW</button>' +
+                    '</div>';
+
+                miniBlock += block;
+
+                if( (i+1) % 10 === 0 ){
+                    miniBlock += "</div>";
+
+                    document.getElementById("container").innerHTML += miniBlock;
+
+                    pages++;
+
+                    var divId = "mini"+pages;
+
+                    miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey; display: none' class='miniBlock'>";
+
+
+                    var btn = "<button style='cursor: pointer;padding: 10px;  margin: 5px' class='pagination' onclick='pagination( "+ pages +")'>"+ pages +"</button>";
+
+                    document.getElementById("buttonContainer").innerHTML += btn;
+                }
+            }
+
+            miniBlock += "</div>";
+
+            document.getElementById("container").innerHTML += miniBlock;
+
+        }
+    });
+
+
+    function pagination(id){
+
+        for(var i = 0; i < document.getElementsByClassName("miniBlock").length; i++ ){
+            document.getElementsByClassName("miniBlock")[i].style.display = "none";
+        }
+
+        var divID = "mini"+id;
+        document.getElementById( divID ).style.display = "block";
+    }
+</script>
 </body>
 </html>
