@@ -105,14 +105,12 @@
         if( jsonArray[0].email === email &&  jsonArray[0].password ===  password){
             location.href = "/ekart/listing.html";
         } else {
-
             document.getElementById("error").innerText = "Invalid Credentials";
         }
 
         console.log( jsonArray );
         console.log( email );
         console.log( password );
-
     }
 
     /// REGEX Pattern //
