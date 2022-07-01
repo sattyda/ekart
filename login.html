@@ -76,22 +76,17 @@
     function login( email , password ){
 
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                handleResponse(this.responseText , email , password);
-            }
-        };
-
-        xhttp.open("GET", "/ekart/data/users.json?username="+email+"&password="+password, true);
-
-        var requestBody = {
-            "username" : email,
-            "password" : password
-        }
-
-        // xhttp.send(JSON.stringify(requestBody));  /// FOR POST METHOD
-        xhttp.send();
+       $.ajax({
+    url : "/api/getdata",
+    data : JSON.stringify({ "username" : email , "password": password  }),
+    type : 'post',
+    dataType : 'json',
+    contentType: "application/json",
+    cache : false,
+    success: function(response){
+        console.log(response);
+    }
+});
     }
 
 
