@@ -1,0 +1,16 @@
+[
+  {
+    "name" : "SattyDa",
+    "password": "Stupid",
+    "username" : "user",
+    "email" : "sattyda@gmail.com",
+    "cards": [
+      {
+        "bank" : "no money",
+        "account": 1007,
+        "ifsc": "whatspoint",
+        "balance" : 1
+      }
+    ]
+  }
+]

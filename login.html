@@ -3,8 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        :root {
+            --hgsdsjfg: #E1F5FE;
+            --text-color: #000;
+        }
+
+        body{
+            background: var( --hgsdsjfg );
+        }
+
+        a{
+            color: var(--text-color);
+            background: #B3E5FC;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+
+    </style>
+
+    <!--    scss / sass-->
 </head>
 <body>
+<div style="background: #01579B;">
 
+    <div style="position: absolute ;padding-top: 10px; padding-left: 30px; ">
+        <img src="/ekart/stupid.webp" style="width: 16px; height: 16px; background: white">
+        <b style="color: #fff;">EKART</b>
+    </div>
+
+    <div style="text-align: right; display: inline-block; width: 100%">
+        <a href="/ekart/index.html">HOME</a>
+        <a href="/ekart/registration.html">REGISTER</a>
+    </div>
+</div>
+
+<div style="background: white; border-radius: 30px; position:absolute; padding: 50px; margin: 100px; left: 25%">
+
+    <h4>Login Form</h4><br/><br/>
+
+    <input type="email" id="username" style="padding: 10px 20px;" placeholder="Email" /> <br/><br/>
+    <input type="password" id="password"  style="padding: 10px 20px;" placeholder="Password" /> <br/><br/>
+
+    <button id="login" style="padding: 10px 20px; cursor: pointer">LOGIN</button>
+
+    <br/><br/>
+    <span id="error" style="color: red"></span>
+</div>
+
+
+
+<div id="demo">
+
+</div>
+
+<script>
+
+    document.getElementById("login").addEventListener( "click" ,  function (){
+        login(document.getElementById("username").value  , document.getElementById("password").value);
+    });
+
+    function login( email , password ){
+
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                handleResponse(this.responseText , email , password);
+            }
+        };
+
+        xhttp.open("GET", "/ekart/data/users.json?username="+email+"&password="+password, true);
+
+        var requestBody = {
+            "username" : email,
+            "password" : password
+        }
+
+        // xhttp.send(JSON.stringify(requestBody));  /// FOR POST METHOD
+        xhttp.send();
+    }
+
+
+
+    function handleResponse( str  , email, password ){
+        var jsonArray = JSON.parse(str);
+
+        console.log( jsonArray[0].email );
+        console.log( jsonArray[0].password );
+
+        if( jsonArray[0].email === email &&  jsonArray[0].password ===  password){
+            location.href = "/ekart/listing.html";
+        } else {
+
+            document.getElementById("error").innerText = "Invalid Credentials";
+        }
+
+        console.log( jsonArray );
+        console.log( email );
+        console.log( password );
+
+    }
+
+    /// REGEX Pattern //
+    ///
+
+</script>
 </body>
 </html>
