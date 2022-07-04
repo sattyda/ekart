@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        :root {
+            --hgsdsjfg: #E1F5FE;
+            --text-color: #000;
+        }
+
+        body{
+            background: var( --hgsdsjfg );
+        }
+
+        a{
+            color: var(--text-color);
+            background: #B3E5FC;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+
+    </style>
+
+    <!--    scss / sass-->
+</head>
+<body>
+<div style="background: #01579B;">
+
+    <div style="position: absolute ;padding-top: 10px; padding-left: 30px; ">
+        <img src="/ekart/stupid.webp" style="width: 16px; height: 16px; background: white">
+        <b style="color: #fff;">EKART</b>
+    </div>
+
+    <div style="text-align: right; display: inline-block; width: 100%">
+        <a href="/ekart/profile.html" id="username">User</a>
+        <a type="button" id="logout">LOGOUT</a>
+    </div>
+</div>
+
+
+
+<div id="demo">
+
+    <h1>Welcome to the world of <span id="stupidity"></span></h1>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="cookies.js"></script>
+<script>
+
+    if( getCookie("ncs_api_key") == undefined ){
+        location.href = "/ekart/login.html";
+    }
+
+    document.getElementById("username").innerText = getCookie("username");
+    document.getElementById("stupidity").innerHTML = getCookie("username");
+
+    /// REGEX Pattern //
+    ///
+
+</script>
+</body>
+</html>

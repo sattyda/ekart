@@ -44,13 +44,87 @@
 
     <div style="text-align: right; display: inline-block; width: 100%">
         <a href="/ekart/index.html">HOME</a>
-        <a href="/ekart/login.html">LOGIN</a>
+        <a href="/ekart/registration.html">REGISTER</a>
     </div>
 </div>
 
-<form>
+<div style="background: white; border-radius: 30px; position:absolute; padding: 50px; margin: 100px; left: 25%">
 
-</form>
+    <h4>Register Form</h4><br/><br/>
 
+    <input type="text" id="username" style="padding: 10px 20px;" placeholder="username" /> <br/><br/>
+    <input type="password" id="password"  style="padding: 10px 20px;" placeholder="Password" /> <br/><br/>
+    <input type="text" id="mobile"  style="padding: 10px 20px;" placeholder="Mobile" /> <br/><br/>
+
+    <button onclick="register()" id="login" style="padding: 10px 20px; cursor: pointer">Registration</button>
+
+    <br/><br/>
+    <span id="error" style="color: red"></span>
+</div>
+
+
+
+<div id="demo">
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+
+
+
+
+   function register(){
+
+
+       if(document.getElementById("username").value.length < 5 ){
+           document.getElementById("error").innerText = "Invalid Username";
+           document.getElementById("username").focus();
+           return;
+       }
+
+
+       if(document.getElementById("password").value.length < 6 ){
+           document.getElementById("error").innerText = "Invalid Password";
+           document.getElementById("password").focus();
+           return;
+       }
+
+       if(document.getElementById("mobile").value.length < 8 ){
+           document.getElementById("error").innerText = "Invalid Mobile";
+           document.getElementById("mobile").focus();
+           return;
+       }
+
+       var requestBody= {
+           "username" : document.getElementById("username").value,
+           "password" : document.getElementById("password").value,
+           "mobile" : document.getElementById("mobile").value
+       }
+
+       $.ajax({
+           url : "http://localhost:9999/user/register",
+           data : JSON.stringify( requestBody ),
+           type : 'post',
+           dataType : 'json',
+           contentType: "application/json",
+           cache : false,
+           success: function(response){
+               console.log(response);
+
+               if(response.status === "success"){
+                    location.href = "/ekart/login.html"
+               } else {
+                   document.getElementById("error").innerText = response.message;
+               }
+
+           }
+       });
+   }
+
+
+
+</script>
 </body>
 </html>

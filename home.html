@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        :root {
+            --hgsdsjfg: #E1F5FE;
+            --text-color: #000;
+        }
+
+        body{
+            background: var( --hgsdsjfg );
+        }
+
+        a{
+            color: var(--text-color);
+            background: #B3E5FC;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .active{
+            background-color: aqua;
+        }
+    </style>
+
+
+    <!--    scss / sass-->
+</head>
+<body>
+<div style="background: #01579B;">
+
+    <div style="position: absolute ;padding-top: 10px; padding-left: 30px; ">
+        <img src="/ekart/stupid.webp" style="width: 16px; height: 16px; background: white">
+        <b style="color: #fff;">EKART</b>
+    </div>
+
+    <div style="text-align: right; display: inline-block; width: 100%">
+        <a href="/ekart/profile.html" id="username">User</a>
+        <a type="button" id="logout">LOGOUT</a>
+    </div>
+</div>
+
+
+
+
+<div id="demo">
+
+    <h5>Start Shopping</h5>
+
+
+    <div id="buttonContainer" style="text-align: right">
+    </div>
+
+
+    <div id="container">
+
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="cookies.js"></script>
+
+<script>
+
+    if( getCookie("ncs_api_key") == undefined ){
+        location.href = "/ekart/login.html";
+    }
+
+    document.getElementById("username").innerText = getCookie("username");
+
+
+    var requestBody = {
+        "sessionkey" : getCookie("ncs_api_key") ,
+        "username" : getCookie("username")
+    }
+
+    $.ajax({
+        url : "http://localhost:9999/product/productlist",
+        data : JSON.stringify( requestBody ),
+        type : 'post',
+        dataType : 'json',
+        contentType: "application/json",
+        cache : false,
+        success: function(response){
+            console.log(response);
+
+            if(response.status === "success"){
+
+                var pages = 1;
+
+
+                var divId = "mini"+pages;
+
+
+                var miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey;' class='miniBlock'>";
+
+                var btn = "<button style='cursor: pointer;padding: 10px; margin: 5px' class='pagination active' onclick='pagination( this ,  "+ pages+")'>"+  pages +"</button>";
+
+                document.getElementById("buttonContainer").innerHTML += btn;
+
+                for( var i = 0; i < response.data.length ; i++){
+
+                    var block = '<div style="border-radius: 5px; border: 1px solid green; background: #bebebe; display: inline-block; padding: 5px; margin: 10px" class="sports">' +
+                        '<h3><b>'+ ( response.data[i].id) +': </b> '+ response.data[i].name +'</h3>' +
+                        '<img style="height: 200px; width: 200px" src="'+ response.data[i].picture +'" /><br/>' +
+                        '<h5>Cost : '+ response.data[i].cost +'</h5>' +
+                        '<button style="padding: 5px; ">BUY NOW</button>' +
+                        '</div>';
+
+                    miniBlock += block;
+
+                    if( (i+1) % 10 === 0 ){
+                        miniBlock += "</div>";
+
+                        document.getElementById("container").innerHTML += miniBlock;
+
+                        pages++;
+
+                        var divId = "mini"+pages;
+
+                        miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey; display: none' class='miniBlock'>";
+
+
+                        var btn = "<button style='cursor: pointer;padding: 10px;  margin: 5px' class='pagination' onclick='pagination( this ,  "+ pages +")'>"+ pages +"</button>";
+
+                        document.getElementById("buttonContainer").innerHTML += btn;
+                    }
+                }
+
+                miniBlock += "</div>";
+
+                document.getElementById("container").innerHTML += miniBlock;
+
+            } else {
+                alert( response.message  );
+            }
+        }
+    });
+
+    /// REGEX Pattern //
+    ///
+
+    function pagination( btn,  id){
+
+        var allBtns = document.getElementsByClassName("pagination");
+
+        for( var i = 0; i < allBtns.length ; i++ ){
+            allBtns[i].classList.remove("active");
+        }
+
+        btn.classList.add("active");
+
+        for(var i = 0; i < document.getElementsByClassName("miniBlock").length; i++ ){
+            document.getElementsByClassName("miniBlock")[i].style.display = "none";
+        }
+
+        var divID = "mini"+id;
+        document.getElementById( divID ).style.display = "block";
+    }
+
+
+    console.log( factorial(5) ) ;
+
+    function factorial( n){
+        if( n == 1){
+            return 1;
+        }
+
+        return n * factorial(n-1);
+    }
+
+
+
+
+
+</script>
+</body>
+</html>
