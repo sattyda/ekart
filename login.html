@@ -107,6 +107,7 @@
             success: function(response){
                 console.log(response);
 
+<<<<<<< HEAD
                 if(response.status === "success"){
                     setCookie("username" , response.data.username , 365);
                     setCookie("ncs_api_key" , response.data.key , 365);
@@ -119,6 +120,17 @@
 
             }
         });
+=======
+        if( jsonArray[0].email === email &&  jsonArray[0].password ===  password){
+            location.href = "/ekart/listing.html";
+        } else {
+            document.getElementById("error").innerText = "Invalid Credentials";
+        }
+
+        console.log( jsonArray );
+        console.log( email );
+        console.log( password );
+>>>>>>> f51d49f79c70af51fbbb351c6ef07fcd8fcaea11
     }
 
     /// REGEX Pattern //

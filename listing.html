@@ -6,11 +6,14 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+<<<<<<< HEAD
     <style>
         .active{
             background-color: aqua;
         }
     </style>
+=======
+>>>>>>> f51d49f79c70af51fbbb351c6ef07fcd8fcaea11
 </head>
 <body>
 
@@ -39,7 +42,11 @@
 
             var miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey;' class='miniBlock'>";
 
+<<<<<<< HEAD
             var btn = "<button style='cursor: pointer;padding: 10px; margin: 5px' class='pagination active' onclick='pagination( this ,  "+ pages+")'>"+  pages +"</button>";
+=======
+            var btn = "<button style='cursor: pointer;padding: 10px; margin: 5px' class='pagination' onclick='pagination("+ pages+")'>"+  pages +"</button>";
+>>>>>>> f51d49f79c70af51fbbb351c6ef07fcd8fcaea11
 
             document.getElementById("buttonContainer").innerHTML += btn;
 
@@ -66,7 +73,11 @@
                     miniBlock = "<div id='"+ divId +"' style='margin: 10px; border: 1px solid grey; display: none' class='miniBlock'>";
 
 
+<<<<<<< HEAD
                     var btn = "<button style='cursor: pointer;padding: 10px;  margin: 5px' class='pagination' onclick='pagination( this ,  "+ pages +")'>"+ pages +"</button>";
+=======
+                    var btn = "<button style='cursor: pointer;padding: 10px;  margin: 5px' class='pagination' onclick='pagination( "+ pages +")'>"+ pages +"</button>";
+>>>>>>> f51d49f79c70af51fbbb351c6ef07fcd8fcaea11
 
                     document.getElementById("buttonContainer").innerHTML += btn;
                 }
@@ -80,6 +91,7 @@
     });
 
 
+<<<<<<< HEAD
     function pagination( btn,  id){
 
         var allBtns = document.getElementsByClassName("pagination");
@@ -89,6 +101,9 @@
         }
 
         btn.classList.add("active");
+=======
+    function pagination(id){
+>>>>>>> f51d49f79c70af51fbbb351c6ef07fcd8fcaea11
 
         for(var i = 0; i < document.getElementsByClassName("miniBlock").length; i++ ){
             document.getElementsByClassName("miniBlock")[i].style.display = "none";
