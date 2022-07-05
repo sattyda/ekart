@@ -3,8 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        :root {
+            --hgsdsjfg: #E1F5FE;
+            --text-color: #000;
+        }
+
+        body{
+            background: var( --hgsdsjfg );
+        }
+
+        a{
+            color: var(--text-color);
+            background: #B3E5FC;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+
+        table {
+            border-collapse: collapse;
+
+        }
+
+        tr , td, th {
+            border: 1px solid blue;
+            border-collapse: collapse;
+            padding: 20px;
+        }
+
+
+        input , select {
+            padding: 10px 20px;
+        }
+    </style>
+
+    <!--    scss / sass-->
 </head>
 <body>
+<div style="background: #01579B;">
 
+    <div style="position: absolute ;padding-top: 10px; padding-left: 30px; ">
+        <img src="/ekart/stupid.webp" style="width: 16px; height: 16px; background: white">
+        <b style="color: #fff;">EKART</b>
+    </div>
+
+    <div style="text-align: right; display: inline-block; width: 100%">
+        <a style="background: navajowhite" href="/ekart/kart.html">My Kart</a>
+        <a href="/ekart/profile.html" id="username">User</a>
+        <a type="button" id="logout">LOGOUT</a>
+    </div>
+</div>
+
+
+
+<div id="demo">
+
+    <h3>My Kart</h3>
+
+    <div id="kartContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Product Id</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <div>
+            <span>total Products : <b id="productCount"></b> </span> <br/> <br/>
+            <span>total Amount : <b id="totalAmount"></b> </span> <br/> <br/> <br/>
+
+            <h4>Select Card</h4>
+
+            <div id="cardsContainer">
+                <label><input type="radio" checked name="cardselection" value="new" />New Card</label> <br/><br/>
+
+            </div>
+
+            <div id="newCard" style="background: #cdd2c4; border: 1px solid salmon; padding: 10px; margin: 20px">
+                <h5>New Card Details</h5>
+                <input type="text" id="name" placeholder="cardholder" /> <br/> <br/>
+                <input type="number" maxlength="16" minlength="16" id="cardnumber" placeholder="cardnumber" /> <br/> <br/>
+                <label>Select Card Type</label> <br/>
+                <select id="type">
+                    <option value="CreditCard">Credit Card</option>
+                    <option value="DebitCard">Debit Card</option>
+                </select>
+                <br/> <br/>
+
+
+                <input type="text" id="expiry" placeholder="Expiry Date" /> <br/> <br/>
+                <input type="number" minlength="3" maxlength="3" id="CVV" placeholder="CVV Number"  /> <br/> <br/>
+
+            </div>
+
+            <button id="makepurchase" style="cursor: pointer;padding: 10px 20px; background: #060707; color: greenyellow">Make Purchase</button>
+        </div>
+
+
+
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="cookies.js"></script>
+<script>
+
+    if( getCookie("ncs_api_key") == undefined ){
+        location.href = "/ekart/login.html";
+    }
+
+    document.getElementById("username").innerText = getCookie("username");
+
+    var requestBody = {
+        "sessionkey" : getCookie("ncs_api_key") ,
+        "username" : getCookie("username")
+    }
+
+    $.ajax({
+        url : "http://localhost:9999/product/kartlist",
+        data : JSON.stringify( requestBody ),
+        type : 'post',
+        dataType : 'json',
+        contentType: "application/json",
+        cache : false,
+        success: function(response){
+            console.log(response);
+
+            if(response.status === "success"){
+                var container = document.getElementsByTagName("tbody")[0];
+
+                var productCount = 0;
+                var totalAMount = 0;
+
+                for( var i = 0; i < response.data.length ; i++){
+                    var row = '<tr>' +
+                        '<td>'+(i+1)+'</td>' +
+                        '<td>'+ response.data[i].productid +'</td>' +
+                        '<td>'+ response.data[i].name +'</td>' +
+                        '<td>'+ response.data[i].quantity +'</td>' +
+                        '<td>'+ response.data[i].cost +'</td>' +
+                        '<td>'+ response.data[i].amount +'</td>' +
+                        '</tr>';
+
+                    container.innerHTML += row;
+
+                    productCount += response.data[i].quantity ;
+                    totalAMount += response.data[i].amount;
+                }
+
+                document.getElementById("productCount").innerText =productCount;
+                document.getElementById("totalAmount").innerText = totalAMount;
+
+
+            } else {
+                alert( response.message  );
+            }
+        }
+    });
+
+
+    $.ajax({
+        url : "http://localhost:9999/product/cardslist",
+        data : JSON.stringify( requestBody ),
+        type : 'post',
+        dataType : 'json',
+        contentType: "application/json",
+        cache : false,
+        success: function(response){
+            console.log(response);
+
+            if(response.status === "success"){
+                var container = document.getElementById("cardsContainer");
+
+
+                for( var i = 0; i < response.data.length ; i++){
+
+                    var card = ' <label><input type="radio" name="cardselection" value="'+ response.data[i].cardnumber +'" />'+maskString( response.data[i].cardnumber , 5 , 12 , "X") +'</label> <br/><br/>';
+
+                    container.innerHTML += card;
+                }
+
+            } else {
+                alert( response.message  );
+            }
+        }
+    });
+
+
+    function maskString( str , startLength , endLength, replaceCharacter){
+        var tmp = "";
+        return str;
+    }
+
+
+
+    document.getElementById("makepurchase").addEventListener("click" , function (){
+        var cardoptions = document.getElementsByName("cardselection");
+
+        var selected  = "";
+
+        for( var i = 0; i < cardoptions.length; i++ ){
+
+            if( cardoptions[i].checked ){
+                selected = cardoptions[i].value;
+            }
+        }
+
+        alert( selected );
+    })
+
+</script>
 </body>
 </html>

@@ -46,20 +46,57 @@
     </div>
 
     <div style="text-align: right; display: inline-block; width: 100%">
+        <a href="/ekart/kart.html">My Kart</a>
         <a href="/ekart/profile.html" id="username">User</a>
         <a type="button" id="logout">LOGOUT</a>
     </div>
 </div>
 
 
+<button id="mybot" style="height: 50px; width: 50px; position: fixed; border-radius: 25px; background: blueviolet; bottom: 100px; right: 100px"> KART </button>
 
+<div id="myform" style="display: none; position: fixed; background: #8787b6; padding: 20px; top: 5%; right: 20px">
+    <h4>My KART</h4>
+
+    <div id="kartContainer" style="min-width: 300px; max-height: 400px; overflow: auto">
+
+    </div>
+
+    <button id="saveToKart" style="background: sienna; padding: 10px;">Save to Kart</button>
+
+    <button id="hideform" type="button" style="position: absolute; top : 10px; right: 10px; cursor: pointer"> X </button>
+</div>
+<script>
+    var isFormVisible = false;
+
+    document.getElementById("mybot").addEventListener( "click" , function (){
+
+        if( isFormVisible ){
+            document.getElementById("myform").style.display = "none";
+            isFormVisible = false;
+            this.style.background = "blueviolet";
+
+        } else {
+            document.getElementById("myform").style.display = "block";
+            isFormVisible = true;
+            this.style.background = "grey";
+        }
+    });
+
+    document.getElementById("hideform").addEventListener( "click" , function (){
+        document.getElementById("myform").style.display = "none";
+        isFormVisible = false;
+        document.getElementById("mybot").style.background = "blueviolet";
+    });
+</script>
 
 <div id="demo">
 
     <h5>Start Shopping</h5>
 
 
-    <div id="buttonContainer" style="text-align: right">
+    <div id="buttonContainer" style="text-align: right; ">
+
     </div>
 
 
@@ -112,11 +149,11 @@
 
                 for( var i = 0; i < response.data.length ; i++){
 
-                    var block = '<div style="border-radius: 5px; border: 1px solid green; background: #bebebe; display: inline-block; padding: 5px; margin: 10px" class="sports">' +
+                    var block = '<div id="product-'+ response.data[i].id +'" style="border-radius: 5px; border: 1px solid green; background: #bebebe; display: inline-block; padding: 5px; margin: 10px" class="sports">' +
                         '<h3><b>'+ ( response.data[i].id) +': </b> '+ response.data[i].name +'</h3>' +
                         '<img style="height: 200px; width: 200px" src="'+ response.data[i].picture +'" /><br/>' +
                         '<h5>Cost : '+ response.data[i].cost +'</h5>' +
-                        '<button style="padding: 5px; ">BUY NOW</button>' +
+                        '<button onclick="addToKart(this)" id="btn-'+ response.data[i].id +'"  data-id="'+ response.data[i].id +'" data-name="'+ response.data[i].name +'" data-stock="'+ response.data[i].stock +'"   data-cost="'+ response.data[i].cost +'"  style="padding: 5px; ">BUY NOW</button>' +
                         '</div>';
 
                     miniBlock += block;
@@ -171,16 +208,154 @@
     }
 
 
-    console.log( factorial(5) ) ;
+    function addToKart(btn){
 
-    function factorial( n){
-        if( n == 1){
-            return 1;
-        }
+        // document.getElementById("product-"+ $(btn).data("id")).style.visibility = "hidden";
+        btn.setAttribute("disabled", true);
+        var kartDiv = '<div id="kart-'+ $(btn).data("id") +'" data-id="'+ $(btn).data("id") +'" data-name="'+ $(btn).data("name") +'" data-cost="'+ $(btn).data("cost") +'"  style="border: 1px solid green; margin: 3px; padding: 10px; " class="kartDiv"> '+
+            '<b>'+ $(btn).data("id") +'. </b> '+ $(btn).data("name") +'<br/>' +
+            '<b>Quantity: </b><input type="number" value="1" class="quantity" />'+
+            '<button onclick="restore('+ $(btn).data("id") +')">Remove</button>' +
+            '</div>';
 
-        return n * factorial(n-1);
+        document.getElementById("kartContainer").innerHTML += kartDiv;
     }
 
+    function restore(id){
+        console.log();
+
+        document.getElementById( "btn-" + id).removeAttribute("disabled");
+        document.getElementById("kart-"+ id).remove();
+    }
+
+
+    document.getElementById("saveToKart").addEventListener("click" , function (){
+        var kartBlockArray = document.getElementsByClassName("kartDiv");
+
+
+        var productArray = [];
+
+        for(var i = 0; i < kartBlockArray.length; i++){
+            var product = {};
+
+            product.productid = kartBlockArray[i].getAttribute("data-id");
+            product.name = kartBlockArray[i].getAttribute("data-name");
+            product.quantity = parseInt( kartBlockArray[i].getElementsByClassName("quantity")[0].value ) ;
+            product.orderid = 0;
+            product.cost = parseFloat( kartBlockArray[i].getAttribute("data-cost") );
+            product.amount = product.quantity * parseFloat( kartBlockArray[i].getAttribute("data-cost") );
+            product.username = getCookie("username");
+            productArray.push(product);
+        }
+
+        var requestBody = {
+            "sessionkey" : getCookie("ncs_api_key") ,
+            "username" : getCookie("username") ,
+            "data" : productArray
+        }
+
+        $.ajax({
+            url: "http://localhost:9999/product/addtokart",
+            data: JSON.stringify(requestBody),
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json",
+            cache: false,
+            success: function (response) {
+
+                console.log(response);
+                // alert("Your Products added to kart.")
+            }
+        });
+        console.log(productArray);
+    })
+
+    // console.log( factorial(5) ) ;
+    //
+    // function factorial( n){
+    //     if( n == 1){
+    //         return 1;
+    //     }
+    //
+    //     return n * factorial(n-1);
+    // }
+
+    /// fibonacii series ///
+
+
+    // for( var i = 0; i < n; i++  ){
+    //    for(var j = 0; j < n; j++){
+    //
+    //    }
+    // }
+
+    //
+    // var numbers = [1 , 7 , 9 , 11 ,12];
+    //
+    //
+    // for( var j = 13; j < 10000000; j= j + 3){
+    //     numbers.push( j  )
+    // }
+    //
+    // var searchKey = 2;
+    //
+    // var exist = false;
+    //
+    //
+    // var counter = 0;
+    //
+    // console.log( new Date().getMilliseconds());
+
+    // for( var i = 0; i < numbers.length ; i++ ){
+    //     counter++;
+    //     if( numbers[i] === searchKey ){
+    //         exist = true;
+    //         break;
+    //     }
+    // }
+
+    // var start = 0;
+    // var end = numbers.length - 1;
+
+    // while (end - start > 1 ) {
+    //     counter++;
+    //
+    //     if(searchKey === numbers[start]){
+    //         console.log(exist);
+    //         break;
+    //     }
+    //
+    //     if(searchKey === numbers[end]){
+    //         console.log(exist);
+    //         break;
+    //     }
+    //
+    //     var mid = parseInt((end - start)/2);
+    //
+    //     if( numbers[mid] === searchKey  ){
+    //         console.log(exist);
+    //         break;
+    //     } else if( numbers[mid] > searchKey  ){
+    //         end = mid;
+    //     } if( numbers[mid] < searchKey  ){
+    //         start = mid;
+    //     }
+    // }
+
+    // console.log( "counter:"  +counter);
+    // console.log(exist);
+    //
+    // console.log( new Date().getMilliseconds());
+    //
+    // // =  1  => N ==> log(n)
+    //
+    // function fibonacci( n ){
+    //     if( n <2 ){
+    //         return n;
+    //     }
+    //
+    //     return fibonacci(n-1) + fibonacci(n-2);
+    // }
 
 
 
