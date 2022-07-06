@@ -95,7 +95,7 @@
             <h4>Select Card</h4>
 
             <div id="cardsContainer">
-                <label><input type="radio" checked name="cardselection" value="new" />New Card</label> <br/><br/>
+                <label><input type="radio" checked name="cardselection" value="newCard" />New Card</label> <br/><br/>
 
             </div>
 
@@ -105,14 +105,14 @@
                 <input type="number" maxlength="16" minlength="16" id="cardnumber" placeholder="cardnumber" /> <br/> <br/>
                 <label>Select Card Type</label> <br/>
                 <select id="type">
-                    <option value="CreditCard">Credit Card</option>
+                    <option selected value="CreditCard">Credit Card</option>
                     <option value="DebitCard">Debit Card</option>
                 </select>
                 <br/> <br/>
 
 
                 <input type="text" id="expiry" placeholder="Expiry Date" /> <br/> <br/>
-                <input type="number" minlength="3" maxlength="3" id="CVV" placeholder="CVV Number"  /> <br/> <br/>
+                <input type="number" minlength="3" maxlength="3" id="cvv" placeholder="CVV Number"  /> <br/> <br/>
 
             </div>
 
@@ -140,6 +140,9 @@
         "username" : getCookie("username")
     }
 
+    var productCount = 0;
+    var totalAMount = 0;
+
     $.ajax({
         url : "http://localhost:9999/product/kartlist",
         data : JSON.stringify( requestBody ),
@@ -153,8 +156,7 @@
             if(response.status === "success"){
                 var container = document.getElementsByTagName("tbody")[0];
 
-                var productCount = 0;
-                var totalAMount = 0;
+
 
                 for( var i = 0; i < response.data.length ; i++){
                     var row = '<tr>' +
@@ -216,22 +218,91 @@
         return str;
     }
 
-
-
     document.getElementById("makepurchase").addEventListener("click" , function (){
         var cardoptions = document.getElementsByName("cardselection");
 
         var selected  = "";
 
         for( var i = 0; i < cardoptions.length; i++ ){
-
             if( cardoptions[i].checked ){
                 selected = cardoptions[i].value;
             }
         }
 
-        alert( selected );
-    })
+
+        if(selected === "newCard") {
+
+            var requestBody = {
+                "sessionkey" : getCookie("ncs_api_key") ,
+                "username" : getCookie("username") ,
+                "data" : {
+                    "username" : getCookie("username"),
+                    "name" : document.getElementById("name").value,
+                    "cardnumber" : document.getElementById("cardnumber").value,
+                    "expiry" : document.getElementById("expiry").value,
+                    "cvv" : document.getElementById("cvv").value,
+                    "type" : document.getElementById("type").value
+                }
+            }
+
+            $.ajax({
+                url: "http://localhost:9999/product/savecard",
+                data: JSON.stringify(requestBody),
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json",
+                cache: false,
+                success: function (response) {
+                    if(response.status === "success"){
+                        console.log("Saved Card");
+
+                        placeOrder(document.getElementById("cardnumber").value);
+                    }  else {
+                        alert( response.message );
+                    }
+                }
+            });
+        } else {
+            placeOrder( selected );
+        }
+
+
+    });
+
+
+    function placeOrder( cardnumber ){
+        var requestBody = {
+            "sessionkey" : getCookie("ncs_api_key") ,
+            "username" : getCookie("username") ,
+            "data" : {
+                "username" : getCookie("username"),
+                "productcount" : productCount,
+                "cardnumber" : cardnumber,
+                "totalcost" : totalAMount
+            }
+        }
+
+        $.ajax({
+            url: "http://localhost:9999/product/saveorder",
+            data: JSON.stringify(requestBody),
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json",
+            cache: false,
+            success: function (response) {
+
+                console.log(response)
+
+                if(response.status === "success"){
+                    alert("Thanks for the order. Continue shopping");
+                    location.href = "/ekart/home.html";
+
+                }  else {
+                    alert( response.message );
+                }
+            }
+        });
+    }
 
 </script>
 </body>
