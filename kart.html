@@ -201,7 +201,7 @@
 
                 for( var i = 0; i < response.data.length ; i++){
 
-                    var card = ' <label><input type="radio" name="cardselection" value="'+ response.data[i].cardnumber +'" />'+maskString( response.data[i].cardnumber , 5 , 12 , "X") +'</label> <br/><br/>';
+                    var card = ' <label><input type="radio" name="cardselection" value="'+ response.data[i].cardnumber +'" />'+maskString( response.data[i].cardnumber , 4 , 12 , "X") +'</label> <br/><br/>';
 
                     container.innerHTML += card;
                 }
@@ -215,7 +215,17 @@
 
     function maskString( str , startLength , endLength, replaceCharacter){
         var tmp = "";
-        return str;
+
+        for( var i = 0; i < str.length; i++ ){
+
+            if( i >= (startLength) && i < endLength){
+                tmp = tmp + replaceCharacter;
+            } else {
+                tmp = tmp + str[i];
+            }
+        }
+
+        return tmp;
     }
 
     document.getElementById("makepurchase").addEventListener("click" , function (){
@@ -265,8 +275,6 @@
         } else {
             placeOrder( selected );
         }
-
-
     });
 
 

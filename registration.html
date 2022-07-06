@@ -52,12 +52,37 @@
 
     <h4>Register Form</h4><br/><br/>
 
-    <input type="text" id="username" style="padding: 10px 20px;" placeholder="username" /> <br/><br/>
+
+    <input  type="text" id="username" style="padding: 10px 20px;" placeholder="username" /> <br/><br/>
     <input type="password" id="password"  style="padding: 10px 20px;" placeholder="Password" /> <br/><br/>
     <input type="text" id="mobile"  style="padding: 10px 20px;" placeholder="Mobile" /> <br/><br/>
 
-    <button onclick="register()" id="login" style="padding: 10px 20px; cursor: pointer">Registration</button>
+    <button onclick="register()" on onmouseenter="colorChange(this)" onmouseleave="colorDefault(this)" id="login" style="padding: 10px 20px; cursor: pointer">Registration</button>
 
+    <br/><br/>
+
+    <button id="testBtn" onmouseenter="colorChange(this)" onclick="alert('sattyda')" onmouseleave="colorDefault(this)">TESt BUTTON</button>
+    <script>
+        function colorChange(ele){
+            ele.style.backgroundColor = "#22347b";
+        }
+
+        function colorDefault(ele){
+            ele.style.backgroundColor = "";
+        }
+
+        document.getElementById("username").addEventListener( "keyup" , usernameclicked);
+
+        function usernameclicked(){
+
+
+            if( document.getElementById("username").value.length < 5){
+                document.getElementById("username").style.border = "3px solid red";
+            } else {
+                document.getElementById("username").style.border = "3px solid green";
+            }
+        }
+    </script>
     <br/><br/>
     <span id="error" style="color: red"></span>
 </div>
@@ -74,7 +99,6 @@
 
 
    function register(){
-
 
        if(document.getElementById("username").value.length < 5 ){
            document.getElementById("error").innerText = "Invalid Username";

@@ -3,8 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        var month = new Date().getMonth();
+    </script>
+
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        :root{
+            --theme-color : red;
+        }
+
+        li {
+            display: inline-block;
+            border-bottom: 1px dotted orange;
+            margin-left: 20px;
+            color: var(--theme-color);
+        }
+
+        p {
+            color: var(--theme-color);
+        }
+
+        .brick{
+            height: 38px;
+            width: 78px;
+            border: 1px solid orangered;
+            background: grey;
+            display: inline-block;
+        }
+
+        .rows{
+            margin: 0;
+            padding: 0;
+
+        }
+
+        #paddle{
+            height: 36px;
+            width: 236px;
+            border: 2px solid #051c3f;
+            background: #b1d11f;
+            display: inline-block;
+            position: absolute;
+        }
+
+    </style>
+
 </head>
 <body>
 
+<div>
+    <ul style="list-style-type: none; text-align: right">
+
+    </ul>
+
+
+
+    <h2>Brick Breaker</h2>
+
+
+    <div style="width: 800px;height: 600px  ;border: 2px solid seagreen">
+        <div id="brickContainer"></div>
+        <div id="fireBallArea" style="height: 440px; background: lightblue"></div>
+        <div id="paddleContainer" style="height: 40px; width: 100%; background: #8787b6;position: relative"><div id="paddle"></div></div>
+    </div>
+
+</div>
+
+<script>
+        var brickContainer = document.getElementById("brickContainer");
+
+
+        for( var j = 1 ; j <= 3; j++ ){
+
+            var row = '<div style="max-height: 40px" class="rows" id="row-'+ j +'">';
+
+            for(var i = 1; i <= 10 ; i++){
+                row += "<div class='brick'></div>"
+            }
+
+            row += "</div>";
+
+            brickContainer.innerHTML += row;
+        }
+
+        var paddle = document.getElementById("paddle");
+
+        paddle.style.left = "0px";
+
+
+        document.onkeydown = checkKey;
+
+        function checkKey(e) {
+
+            e = e || window.event;
+
+            if (e.keyCode == '37') {
+                var currentLeft = parseInt( paddle.style.left );
+
+                var finalLeft = (currentLeft-80)
+
+                if(finalLeft >= 0){
+                    paddle.style.left = finalLeft+ "px";
+                }
+            }
+
+            if (e.keyCode == '39') {
+                var currentLeft = parseInt( paddle.style.left );
+
+                var finalLeft = (currentLeft+80);
+
+                if(finalLeft <=560 ){
+                    paddle.style.left = finalLeft+ "px";
+                }
+            }
+
+        }
+
+</script>
 </body>
 </html>
+
+<!--////-->
+<!--   Pseudo code-->
+
+<!--    brick size === 2cm * 3cm-->
+
+<!--    bricks ==> [0 4), [5 , 8), [9 , 11), [12 , 16),-->
+
+
+<!--    Define Left Wall and Right wall-->
+
+
+
+<!--    paddle ==> [0, 7]  [1 , 8].....[ 8 , 16 ]  ====> move paddle 1 step on 1 arrow key..-->
+
+<!--    _ _ _ _ _ _ _-->
+
+<!--  ==> less than 45 ===>  (angle of Impact) + i*10 == -->
+<!--  ==> more than 45 ===>  (angle of Impact) - i*10 == -->
+
+<!--    == fire ball ==-->
+
+<!--    impact on brick / lWall + rWall == angle of implact == angle of reflection-->
+
+
+<!--//-->
