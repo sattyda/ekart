@@ -70,10 +70,12 @@
 
     <div style="width: 800px;height: 600px  ;border: 2px solid seagreen">
         <div id="brickContainer"></div>
-        <div id="fireBallArea" style="height: 440px; background: lightblue"></div>
-        <div id="paddleContainer" style="height: 40px; width: 100%; background: #8787b6;position: relative"><div id="paddle"></div></div>
+        <canvas id="fireBallArea" height="440" width="800" style="height: 440px; width: 800px;"></canvas>
+        <div id="paddleContainer" style="height: 40px; width: 100%; background: #8787b6;position: relative; margin-top: -4px"><div id="paddle"></div></div>
     </div>
 
+
+    <h5 id="score"></h5>
 </div>
 
 <script>
@@ -100,11 +102,13 @@
 
         document.onkeydown = checkKey;
 
+        var checker = true;
+
         function checkKey(e) {
 
             e = e || window.event;
 
-            if (e.keyCode == '37') {
+            if (e.keyCode == '37' && checker ) {
                 var currentLeft = parseInt( paddle.style.left );
 
                 var finalLeft = (currentLeft-80)
@@ -114,7 +118,7 @@
                 }
             }
 
-            if (e.keyCode == '39') {
+            if (e.keyCode == '39' && checker) {
                 var currentLeft = parseInt( paddle.style.left );
 
                 var finalLeft = (currentLeft+80);
@@ -126,6 +130,89 @@
 
         }
 
+
+
+
+        /// Setup Canvas
+
+        const fps = 30;
+        var bs = 40;
+        var bx, by;
+        var xv, yv;
+        var canvas, context;
+
+        canvas = document.getElementById("fireBallArea");
+
+        context = canvas.getContext("2d");
+
+        bx = canvas.width / 2;
+        by = 0;
+
+        xv = Math.floor( 100 + Math.random()*100  )/fps;
+        yv = Math.floor( 100 + Math.random()*100  )/fps;
+
+
+        console.log(canvas.height);
+        console.log(canvas.width);
+
+        var interval = setInterval(update , 1000 / fps);
+
+        function update(){
+            bx += xv;
+            by += yv;
+
+            if(bx - bs/2 < 0 && xv < 0){
+                xv = -xv;
+            }
+
+            if(bx + bs/2 > canvas.width && xv > 0){
+                xv = -xv;
+            }
+
+            if(by - bs/2 < 0 && yv < 0){
+                yv = -yv;
+            }
+
+
+            if( by + bs/2 > canvas.height ){
+
+                var currentLeft = parseInt( paddle.style.left );
+                if( bx - bs/2 > currentLeft   &&  bx + bs/2 < (currentLeft + 240) ){
+                    updateScore();
+                } else {
+                    clearInterval(interval);
+
+                    checker = false;
+                }
+            }
+
+            if(by + bs/2 > canvas.height && yv > 0){
+                yv = -yv;
+            }
+
+
+
+            context.fillStyle = "lightblue";
+            context.fillRect( 0, 0, canvas.width , canvas.height );
+
+            context.fillStyle = "red";
+            context.fillRect( bx-bs/2 , by-bs/2 , bs, bs);
+
+        }
+
+        var score = 0;
+        var step = 0;
+
+        function updateScore(){
+            step++;
+            score = score + step*20;
+
+            xv += step*0.5;
+            yv += step*0.5;
+
+            document.getElementById("score").innerHTML ="score: " + score;
+           console.log();
+        }
 </script>
 </body>
 </html>
